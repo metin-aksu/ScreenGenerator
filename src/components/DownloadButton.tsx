@@ -28,172 +28,170 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
     canvas.width = 1242;
     canvas.height = 2688;
 
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
+    // Önce kullanıcı resmini yükle
+    const userImg = new Image();
+    userImg.crossOrigin = 'anonymous';
+    userImg.src = image;
 
-    img.onload = () => {
-      // Arka plan
-      if (!transparentBg) {
-        ctx.fillStyle = bgColor;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-      }
+    userImg.onload = () => {
+      // Sonra çerçeve resmini yükle
+      const frameImg = new Image();
+      frameImg.crossOrigin = 'anonymous'; // Local dosya için gerekmeyebilir ama zararı yok
+      frameImg.src = '/phone-frame.png'; // Public klasöründen
 
-      // Telefon boyutları
-      const phoneWidth = canvas.width * 0.85;
-      const phoneHeight = canvas.height * 0.82;
+      frameImg.onload = () => {
+        // --- 1. Arka Plan ---
+        if (!transparentBg) {
+          ctx.fillStyle = bgColor;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
 
-      // Pozisyon hesaplama
-      let phoneX = (canvas.width - phoneWidth) / 2;
-      let phoneY = (canvas.height - phoneHeight) / 2;
+        // --- 2. Başlık ve Frame Konumu Hesaplama ---
 
-      // Eğer başlık varsa, başlığı çiz ve telefonu aşağı kaydır
-      if (titleText) {
-        // Başlık yazı tipi ve ayarları
-        // Preview'daki telefon genişliği (280px) ile Canvas'taki telefon genişliği arasındaki oranı buluyoruz
-        const previewPhoneWidth = 280;
-        const canvasPhoneWidth = canvas.width * 0.85;
-        const scaleFactor = canvasPhoneWidth / previewPhoneWidth;
-        const actualFontSize = titleSize * scaleFactor;
+        // Frame Boyutları (Canvas'a oranla)
+        // Frame resminin aspect ratio'sunu koruyarak genişliği ayarlayalım
+        const frameAspectRatio = frameImg.width / frameImg.height;
+        const targetFrameWidth = canvas.width * 0.9; // %90 genişlik (biraz daha geniş olsun)
+        const targetFrameHeight = targetFrameWidth / frameAspectRatio;
 
-        ctx.font = `bold ${actualFontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
-        ctx.fillStyle = titleColor;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'top';
+        // Varsayılan Frame Konumu (Ortalı)
+        let phoneX = (canvas.width - targetFrameWidth) / 2;
+        let phoneY = (canvas.height - targetFrameHeight) / 2;
 
-        // Yazı ayarları
-        const titleMarginTop = 150;
-        const titleX = canvas.width / 2;
-        const maxWidth = canvas.width - 200; // Kenarlardan 100px boşluk
-        const lineHeight = actualFontSize * 1.2;
+        // Başlık varsa kaydır
+        if (titleText) {
+          // Preview ve Canvas oranlarını eşitleme mantığı:
+          // Preview Container (phone-section) Genişliği: 330px (index.css)
+          // Preview Padding: 2rem (32px) * 2 = 64px
+          // Preview Kullanılabilir Alan: 330 - 64 = 266px
 
-        // Metin sarmalama (Text Wrapping) mantığı
-        const words = titleText.split(' ');
-        let line = '';
-        const lines = [];
+          const previewContainerWidth = 330;
+          const canvasWidth = canvas.width; // 1242
 
-        for (let n = 0; n < words.length; n++) {
-          const testLine = line + words[n] + ' ';
-          const metrics = ctx.measureText(testLine);
-          const testWidth = metrics.width;
+          // Ölçek Faktörü: Canvas / Preview
+          const scaleFactor = canvasWidth / previewContainerWidth;
 
-          if (testWidth > maxWidth && n > 0) {
-            lines.push(line);
-            line = words[n] + ' ';
-          } else {
-            line = testLine;
+          // Font boyutunu ölçekle
+          const actualFontSize = titleSize * scaleFactor;
+
+          ctx.font = `bold ${actualFontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
+          ctx.fillStyle = titleColor;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'top';
+
+          // Padding ve Genişlik Ayarları
+          // Preview padding oranını koru
+          const previewPaddingTotal = 64; // 2rem left + 2rem right
+          const canvasPaddingTotal = previewPaddingTotal * scaleFactor;
+
+          const titleMarginTop = 80; // Sabit kalabilir veya oranlanabilir
+          const titleX = canvas.width / 2;
+          const maxWidth = canvasWidth - canvasPaddingTotal; // ~1001px
+          const lineHeight = actualFontSize * 1.2;
+
+          // Text Wrapping
+          const words = titleText.split(' ');
+          let line = '';
+          const lines = [];
+
+          for (let n = 0; n < words.length; n++) {
+            const testLine = line + words[n] + ' ';
+            const metrics = ctx.measureText(testLine);
+            const testWidth = metrics.width;
+
+            if (testWidth > maxWidth && n > 0) {
+              lines.push(line);
+              line = words[n] + ' ';
+            } else {
+              line = testLine;
+            }
           }
+          lines.push(line);
+
+          lines.forEach((lineText, index) => {
+            ctx.fillText(lineText.trim(), titleX, titleMarginTop + (index * lineHeight));
+          });
+
+          const totalTextHeight = lines.length * lineHeight;
+          const phoneMarginTop = 40;
+          phoneY = titleMarginTop + totalTextHeight + phoneMarginTop;
+
+          // Taşma kontrolü kaldırıldı: Kullanıcı taşsa bile aşağı kaymasını istiyor (crop olsun)
+          // const maxPhoneY = canvas.height - targetFrameHeight - 50;
+          // if (phoneY > maxPhoneY) {
+          //   phoneY = maxPhoneY;
+          // }
         }
-        lines.push(line);
 
-        // Satırları çiz
-        lines.forEach((lineText, index) => {
-          ctx.fillText(lineText.trim(), titleX, titleMarginTop + (index * lineHeight));
-        });
+        // --- 3. Frame Çizimi ---
+        // Gölge efekti (Frame resminin kendisine ait gölgesi yoksa ekleyelim)
+        ctx.save();
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
+        ctx.shadowBlur = 50;
+        ctx.shadowOffsetY = 30;
+        ctx.drawImage(frameImg, phoneX, phoneY, targetFrameWidth, targetFrameHeight);
+        ctx.restore();
 
-        // Telefonu aşağı kaydır
-        // Toplam yazı yüksekliği + boşluk kadar aşağı
-        const totalTextHeight = lines.length * lineHeight;
-        const phoneMarginTop = 80; // Yazı ile telefon arası boşluk
-        phoneY = titleMarginTop + totalTextHeight + phoneMarginTop;
+        // --- 4. Ekran İçeriği Çizimi ---
 
-        // Taşma kontrolü (eğer çok uzun yazı varsa)
-        const maxPhoneY = canvas.height - phoneHeight - 50;
-        if (phoneY > maxPhoneY) {
-          // En kötü durumda alt sınıra yasla (veya scale küçültülebilir ama şimdilik yaslayalım)
-          phoneY = maxPhoneY;
+        // Ekranın frame içindeki konumu (CSS'teki % değerlerine göre)
+        // CSS: top: 1.8%, left: 4%, width: 92%, height: 96.5%
+        const screenMarginLeft = targetFrameWidth * 0.04;
+        const screenMarginTop = targetFrameHeight * 0.018;
+        const screenWidth = targetFrameWidth * 0.92;
+        const screenHeight = targetFrameHeight * 0.965;
+
+        const screenX = phoneX + screenMarginLeft;
+        const screenY = phoneY + screenMarginTop;
+        const screenRadius = screenWidth * 0.12; // Köşe yuvarlaklığı tahmini
+
+        // Clip (Kesme) Alanı Oluştur
+        ctx.save();
+        ctx.beginPath();
+        ctx.roundRect(screenX, screenY, screenWidth, screenHeight, screenRadius);
+        ctx.clip();
+
+        // Kullanıcı resmini "cover" modunda çiz
+        const imgRatio = userImg.width / userImg.height;
+        const screenRatio = screenWidth / screenHeight;
+        let drawWidth, drawHeight, drawX, drawY;
+
+        if (imgRatio > screenRatio) {
+          drawHeight = screenHeight;
+          drawWidth = userImg.width * (screenHeight / userImg.height);
+          drawX = screenX + (screenWidth - drawWidth) / 2;
+          drawY = screenY;
+        } else {
+          drawWidth = screenWidth;
+          drawHeight = userImg.height * (screenWidth / userImg.width);
+          drawX = screenX;
+          drawY = screenY + (screenHeight - drawHeight) / 2;
         }
-      }
 
-      const phoneRadius = 100;
+        ctx.fillStyle = '#000000'; // Resim yoksa siyah
+        ctx.fillRect(screenX, screenY, screenWidth, screenHeight);
+        ctx.drawImage(userImg, drawX, drawY, drawWidth, drawHeight);
+        ctx.restore();
 
-      // Telefon çerçevesi (dış)
-      const frameGradient = ctx.createLinearGradient(phoneX, phoneY, phoneX, phoneY + phoneHeight);
-      frameGradient.addColorStop(0, '#2d2d2d');
-      frameGradient.addColorStop(1, '#1a1a1a');
+        // --- 5. Dynamic Island Overlay ---
+        // Üstüne siyah hap şeklinde island çizelim ki resim onu kapatmasın
+        const islandWidth = targetFrameWidth * 0.28; // Tahmini oran
+        const islandHeight = islandWidth * 0.28;
+        const islandX = phoneX + (targetFrameWidth - islandWidth) / 2;
+        const islandY = screenY + (screenHeight * 0.015); // Biraz aşağıda
 
-      ctx.fillStyle = frameGradient;
-      ctx.beginPath();
-      ctx.roundRect(phoneX, phoneY, phoneWidth, phoneHeight, phoneRadius);
-      ctx.fill();
+        ctx.fillStyle = '#000000';
+        ctx.beginPath();
+        ctx.roundRect(islandX, islandY, islandWidth, islandHeight, islandHeight / 2);
+        ctx.fill();
 
-      // Çerçeve border (metalik efekt)
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
-      ctx.lineWidth = 3;
-      ctx.stroke();
-
-      // Ekran alanı
-      const screenPadding = 25;
-      const screenX = phoneX + screenPadding;
-      const screenY = phoneY + screenPadding;
-      const screenWidth = phoneWidth - (screenPadding * 2);
-      const screenHeight = phoneHeight - (screenPadding * 2);
-      const screenRadius = 80;
-
-      // Ekran arka planı
-      ctx.fillStyle = '#000000';
-      ctx.beginPath();
-      ctx.roundRect(screenX, screenY, screenWidth, screenHeight, screenRadius);
-      ctx.fill();
-
-      // Ekran içine resmi çiz (clip ile)
-      ctx.save();
-      ctx.beginPath();
-      ctx.roundRect(screenX, screenY, screenWidth, screenHeight, screenRadius);
-      ctx.clip();
-
-      const imgRatio = img.width / img.height;
-      const screenRatio = screenWidth / screenHeight;
-
-      let drawWidth, drawHeight, drawX, drawY;
-
-      if (imgRatio > screenRatio) {
-        drawHeight = screenHeight;
-        drawWidth = img.width * (screenHeight / img.height);
-        drawX = screenX + (screenWidth - drawWidth) / 2;
-        drawY = screenY;
-      } else {
-        drawWidth = screenWidth;
-        drawHeight = img.height * (screenWidth / img.width);
-        drawX = screenX;
-        drawY = screenY + (screenHeight - drawHeight) / 2;
-      }
-
-      ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
-      ctx.restore();
-
-      // Dynamic Island
-      const islandWidth = 220;
-      const islandHeight = 65;
-      const islandX = phoneX + (phoneWidth - islandWidth) / 2;
-      const islandY = screenY + 25;
-
-      ctx.fillStyle = '#1a1a1a';
-      ctx.beginPath();
-      ctx.roundRect(islandX, islandY, islandWidth, islandHeight, 35);
-      ctx.fill();
-
-      // Yan butonlar
-      ctx.fillStyle = '#3a3a3a';
-      // Sağ
-      ctx.beginPath();
-      ctx.roundRect(phoneX + phoneWidth - 2, phoneY + 250, 8, 60, [0, 4, 4, 0]);
-      ctx.fill();
-      ctx.beginPath();
-      ctx.roundRect(phoneX + phoneWidth - 2, phoneY + 330, 8, 120, [0, 4, 4, 0]);
-      ctx.fill();
-      // Sol
-      ctx.beginPath();
-      ctx.roundRect(phoneX - 6, phoneY + 280, 8, 80, [4, 0, 0, 4]);
-      ctx.fill();
-
-      // İndir
-      const link = document.createElement('a');
-      link.download = `app_screenshot_${Date.now()}.png`;
-      link.href = canvas.toDataURL('image/png');
-      link.click();
+        // --- 6. İndirme ---
+        const link = document.createElement('a');
+        link.download = `app_screen_${Date.now()}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      };
     };
-
-    img.src = image;
   };
 
   return (

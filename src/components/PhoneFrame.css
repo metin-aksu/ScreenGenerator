@@ -1,98 +1,57 @@
 .phone-frame-container {
-  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 20px;
 }
 
-.phone-frame {
+.phone-frame-wrapper {
   position: relative;
-  width: 280px;
-  height: 600px;
-  background: linear-gradient(180deg, #1a1a1a 0%, #2d2d2d 100%);
-  border-radius: 50px;
-  padding: 12px;
-  box-shadow:
-    0 50px 100px rgba(0, 0, 0, 0.5),
-    0 0 0 1px rgba(255, 255, 255, 0.1),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+  width: 320px;
+  /* Genişlik ayarı */
   transition: transform 0.3s ease;
-}
-
-.phone-frame:hover {
-  transform: scale(1.02);
-}
-
-.phone-screen {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  background: #000;
-  border-radius: 40px;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   cursor: pointer;
 }
 
-.phone-screen::before {
-  content: '';
-  position: absolute;
-  top: 12px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100px;
-  height: 30px;
-  background: #1a1a1a;
-  border-radius: 20px;
-  z-index: 10;
+.phone-frame-wrapper:hover {
+  transform: scale(1.02);
 }
 
-.phone-screen-content {
+.frame-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  pointer-events: none;
+  /* Tıklamalar container'a geçsin */
+  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.4));
+}
+
+.screen-container {
+  position: absolute;
+  /* Frame görseline göre ekranın başladığı yerleri ayarlıyoruz. 
+     Bu değerler resme göre ince ayar isteyebilir. */
+  top: 1.8%;
+  left: 4%;
+  width: 92%;
+  height: 96.5%;
+
+  border-radius: 45px;
+  /* Ekran köşe yuvarlaklığı */
+  overflow: hidden;
+  z-index: 5;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
+  /* Resim yokken frame'in kendi siyah ekranı görünsün istersek transparent */
+}
+
+.preview-container {
   width: 100%;
   height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   position: relative;
-}
-
-.upload-placeholder {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-  color: rgba(255, 255, 255, 0.4);
-  transition: all 0.3s ease;
-}
-
-.phone-screen:hover .upload-placeholder {
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.plus-icon {
-  width: 60px;
-  height: 60px;
-  border: 3px dashed currentColor;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2rem;
-  font-weight: 300;
-  transition: all 0.3s ease;
-}
-
-.phone-screen:hover .plus-icon {
-  border-color: #6366f1;
-  color: #6366f1;
-  transform: scale(1.1);
-}
-
-.upload-text {
-  font-size: 0.9rem;
-  text-align: center;
+  background-color: #000;
 }
 
 .preview-image {
@@ -101,60 +60,50 @@
   object-fit: cover;
 }
 
-.file-input {
-  display: none;
-}
-
-/* Side buttons */
-.phone-frame::before {
-  content: '';
+.dynamic-island-overlay {
   position: absolute;
-  right: -3px;
-  top: 120px;
-  width: 4px;
-  height: 30px;
-  background: linear-gradient(180deg, #3a3a3a 0%, #2a2a2a 100%);
-  border-radius: 0 4px 4px 0;
-}
-
-.phone-frame::after {
-  content: '';
-  position: absolute;
-  right: -3px;
-  top: 170px;
-  width: 4px;
-  height: 60px;
-  background: linear-gradient(180deg, #3a3a3a 0%, #2a2a2a 100%);
-  border-radius: 0 4px 4px 0;
-}
-
-/* Left button */
-.phone-left-button {
-  position: absolute;
-  left: -3px;
-  top: 140px;
-  width: 4px;
-  height: 40px;
-  background: linear-gradient(180deg, #3a3a3a 0%, #2a2a2a 100%);
-  border-radius: 4px 0 0 4px;
-}
-
-@keyframes pulse {
-
-  0%,
-  100% {
-    opacity: 0.4;
-  }
-
-  50% {
-    opacity: 0.7;
-  }
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 85px;
+  height: 25px;
+  background-color: black;
+  border-radius: 20px;
+  z-index: 10;
 }
 
 .upload-placeholder {
-  animation: pulse 2s ease-in-out infinite;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: rgba(255, 255, 255, 0.5);
+  gap: 1rem;
+  /* Eğer resim yoksa arkası siyah olsun ki placeholder görünsün (frame ekranı zaten siyah gerçi) */
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
 }
 
-.phone-screen:hover .upload-placeholder {
-  animation: none;
+.plus-icon {
+  font-size: 3rem;
+  font-weight: 300;
+  width: 60px;
+  height: 60px;
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.upload-text {
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.file-input {
+  display: none;
 }

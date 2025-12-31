@@ -44,7 +44,11 @@ function App() {
       <main className="main-content">
         <div
           className="phone-section"
-          style={{ backgroundColor: transparentBg ? 'transparent' : bgColor }}
+          style={{
+            backgroundColor: transparentBg ? 'transparent' : bgColor,
+            justifyContent: titleText ? 'flex-start' : 'center',
+            paddingTop: titleText ? '20px' : '0'
+          }}
         >
           {titleText && (
             <div
@@ -52,7 +56,7 @@ function App() {
               style={{
                 color: titleColor,
                 fontSize: `${titleSize}px`,
-                marginBottom: '20px'
+                // marginBottom: '10px'
               }}
             >
               {titleText}
