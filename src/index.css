@@ -91,6 +91,7 @@ body {
   margin: 1rem;
   transition: background-color 0.3s ease;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .title-overlay {
@@ -149,6 +150,13 @@ body {
   }
 
   .info-text {
+    text-align: left;
+  }
+
+  .background-text {
+    width: 100%;
+    font-size: 1rem;
+    font-weight: 800;
     text-align: left;
   }
 }
@@ -390,7 +398,7 @@ body {
   align-items: center;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 999px) {
   .app {
     padding: 1rem;
   }
@@ -401,6 +409,13 @@ body {
 
   .buttons-container {
     flex-direction: column;
+  }
+
+  .background-text {
+    width: 100%;
+    font-size: 1rem;
+    font-weight: 800;
+    text-align: center;
   }
 }
 

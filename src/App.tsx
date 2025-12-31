@@ -120,6 +120,7 @@ function App() {
 
             <div className="divider"></div>
 
+            <div className="background-text">Background</div>
             <button
               className="color-btn"
               onClick={handleColorButtonClick}
@@ -130,7 +131,7 @@ function App() {
                 className="color-preview"
                 style={{ backgroundColor: transparentBg ? 'transparent' : bgColor }}
               />
-              <span>Background Color</span>
+              <span>Color</span>
             </button>
             <input
               ref={colorInputRef}
