@@ -69,7 +69,8 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
           const canvasWidth = canvas.width; // 1242
 
           // Ölçek Faktörü: Canvas / Preview
-          const scaleFactor = canvasWidth / previewContainerWidth;
+          // Kullanıcı isteği üzerine font biraz daha büyütüldü (* 1.15)
+          const scaleFactor = (canvasWidth / previewContainerWidth) * 1.15;
 
           // Font boyutunu ölçekle
           const actualFontSize = titleSize * scaleFactor;
@@ -135,15 +136,15 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
         // --- 4. Ekran İçeriği Çizimi ---
 
         // Ekranın frame içindeki konumu (CSS'teki % değerlerine göre)
-        // CSS: top: 1.8%, left: 4%, width: 92%, height: 96.5%
-        const screenMarginLeft = targetFrameWidth * 0.04;
-        const screenMarginTop = targetFrameHeight * 0.018;
-        const screenWidth = targetFrameWidth * 0.92;
-        const screenHeight = targetFrameHeight * 0.965;
+        // CSS: top: 1.6%, left: 3.5%, width: 93%, height: 96.8%
+        const screenMarginLeft = targetFrameWidth * 0.035;
+        const screenMarginTop = targetFrameHeight * 0.016;
+        const screenWidth = targetFrameWidth * 0.93;
+        const screenHeight = targetFrameHeight * 0.968;
 
         const screenX = phoneX + screenMarginLeft;
         const screenY = phoneY + screenMarginTop;
-        const screenRadius = screenWidth * 0.12; // Köşe yuvarlaklığı tahmini
+        const screenRadius = screenWidth * 0.15; // Köşe yuvarlaklığı arttırıldı
 
         // Clip (Kesme) Alanı Oluştur
         ctx.save();
