@@ -3,9 +3,10 @@ import React from 'react';
 interface DownloadButtonProps {
   image: string | null;
   bgColor: string;
+  transparentBg: boolean;
 }
 
-const DownloadButton: React.FC<DownloadButtonProps> = ({ image, bgColor }) => {
+const DownloadButton: React.FC<DownloadButtonProps> = ({ image, bgColor, transparentBg }) => {
   const handleDownload = () => {
     if (!image) return;
 
@@ -21,9 +22,11 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({ image, bgColor }) => {
     img.crossOrigin = 'anonymous';
 
     img.onload = () => {
-      // Arka plan rengi (kullanıcının seçtiği)
-      ctx.fillStyle = bgColor;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      // Arka plan - transparan ise boş bırak, değilse seçilen rengi kullan
+      if (!transparentBg) {
+        ctx.fillStyle = bgColor;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
 
       // Telefon çerçevesi boyutları (canvas'a oranla)
       const phoneWidth = canvas.width * 0.85;

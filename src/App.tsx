@@ -16,7 +16,8 @@ function isLightColor(hexColor: string): boolean {
 
 function App() {
   const [image, setImage] = useState<string | null>(null);
-  const [bgColor, setBgColor] = useState('#0a0a0f');
+  const [bgColor, setBgColor] = useState('#ffffff');
+  const [transparentBg, setTransparentBg] = useState(false);
   const colorInputRef = useRef<HTMLInputElement>(null);
 
   const isLight = useMemo(() => isLightColor(bgColor), [bgColor]);
@@ -38,49 +39,67 @@ function App() {
   };
 
   return (
-    <div
-      className={`app ${isLight ? 'light-mode' : ''}`}
-      style={{ backgroundColor: bgColor }}
-    >
-      <header className="header">
-        <h1>Screenshot Generator</h1>
-      </header>
-
+    <div className={`app ${isLight ? 'light-mode' : ''}`}>
       <main className="main-content">
-        <PhoneFrame image={image} onImageSelect={handleImageSelect} />
-
-        <div className="buttons-container">
-          <DownloadButton image={image} bgColor={bgColor} />
-
-          <button
-            className="color-btn"
-            onClick={handleColorButtonClick}
-            title="Arka plan rengi seç"
-          >
-            <span
-              className="color-preview"
-              style={{ backgroundColor: bgColor }}
-            />
-            <span>Arka Plan Rengi</span>
-          </button>
-          <input
-            ref={colorInputRef}
-            type="color"
-            value={bgColor}
-            onChange={(e) => setBgColor(e.target.value)}
-            className="hidden-color-input"
-          />
-
-          {image && (
-            <button className="clear-btn" onClick={handleClear}>
-              Temizle
-            </button>
-          )}
+        <div
+          className="phone-section"
+          style={{ backgroundColor: transparentBg ? 'transparent' : bgColor }}
+        >
+          <PhoneFrame image={image} onImageSelect={handleImageSelect} />
         </div>
 
-        <p className="info-text">
-          Çıktı boyutu: 1242 × 2688 piksel (iPhone 6.5" için)
-        </p>
+        <div className="controls-section">
+          <header className="header">
+            <h1>Screenshot Generator</h1>
+            <p className="subtitle">App Store Connect için ekran görüntüsü oluşturun</p>
+          </header>
+
+          <div className="buttons-container">
+
+            <button
+              className="color-btn"
+              onClick={handleColorButtonClick}
+              title="Arka plan rengi seç"
+              disabled={transparentBg}
+            >
+              <span
+                className="color-preview"
+                style={{ backgroundColor: transparentBg ? 'transparent' : bgColor }}
+              />
+              <span>Arka Plan Rengi</span>
+            </button>
+
+            <input
+              ref={colorInputRef}
+              type="color"
+              value={bgColor}
+              onChange={(e) => setBgColor(e.target.value)}
+              className="hidden-color-input"
+            />
+
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                checked={transparentBg}
+                onChange={(e) => setTransparentBg(e.target.checked)}
+              />
+              <span className="checkbox-custom"></span>
+              <span>Transparan</span>
+            </label>
+
+            <DownloadButton image={image} bgColor={bgColor} transparentBg={transparentBg} />
+
+            {image && (
+              <button className="clear-btn" onClick={handleClear}>
+                Temizle
+              </button>
+            )}
+          </div>
+
+          <p className="info-text">
+            Çıktı boyutu: 1242 × 2688 piksel (iPhone 6.5" için)
+          </p>
+        </div>
       </main>
     </div>
   );

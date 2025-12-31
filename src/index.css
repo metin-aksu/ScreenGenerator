@@ -17,26 +17,13 @@
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: var(--bg-dark);
+  background: #ffffff;
   min-height: 100vh;
-  color: var(--text-primary);
+  color: #1a1a1a;
   overflow-x: hidden;
 }
 
-body::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background:
-    radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.05) 0%, transparent 70%);
-  pointer-events: none;
-  z-index: -1;
-}
+
 
 #root {
   min-height: 100vh;
@@ -53,20 +40,7 @@ body::before {
   position: relative;
 }
 
-.app::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background:
-    radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.05) 0%, transparent 70%);
-  pointer-events: none;
-  z-index: 0;
-}
+
 
 .app>* {
   position: relative;
@@ -99,6 +73,72 @@ body::before {
   align-items: center;
   gap: 2rem;
   flex: 1;
+  width: 100%;
+  max-width: 1400px;
+}
+
+.phone-section {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Output size: 1242 x 2688 */
+  /* Ratio: ~0.462 */
+  width: 330px;
+  height: 735px;
+  /* 330 / 0.462 */
+  border: 2px dashed rgba(255, 255, 255, 0.2);
+  margin: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.app.light-mode .phone-section {
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+.controls-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  margin-top: 0.25rem;
+}
+
+/* Geniş ekran layout (1000px ve üzeri) */
+@media (min-width: 1000px) {
+  .main-content {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 4rem;
+  }
+
+  .phone-section {
+    flex-shrink: 0;
+  }
+
+  .controls-section {
+    align-items: flex-start;
+    max-width: 400px;
+  }
+
+  .header {
+    text-align: left;
+  }
+
+  .buttons-container {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  .info-text {
+    text-align: left;
+  }
 }
 
 .download-btn {
@@ -188,6 +228,68 @@ body::before {
   position: absolute;
   opacity: 0;
   pointer-events: none;
+}
+
+.color-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.color-btn:disabled .color-preview {
+  background: repeating-conic-gradient(#ccc 0deg 90deg,
+      #fff 90deg 180deg) !important;
+  background-size: 10px 10px !important;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  user-select: none;
+}
+
+.checkbox-label:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.checkbox-label input[type="checkbox"] {
+  display: none;
+}
+
+.checkbox-custom {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--border-color);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  background: repeating-conic-gradient(rgba(255, 255, 255, 0.3) 0deg 90deg,
+      rgba(255, 255, 255, 0.1) 90deg 180deg);
+  background-size: 6px 6px;
+}
+
+.checkbox-label input[type="checkbox"]:checked+.checkbox-custom {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+.checkbox-label input[type="checkbox"]:checked+.checkbox-custom::after {
+  content: '✓';
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
 }
 
 .color-picker-section {
@@ -347,4 +449,22 @@ body::before {
 
 .app.light-mode .color-preview {
   border-color: rgba(0, 0, 0, 0.2);
+}
+
+.app.light-mode .checkbox-label {
+  color: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.15);
+}
+
+.app.light-mode .checkbox-label:hover {
+  background: rgba(0, 0, 0, 0.1);
+  color: #1a1a2e;
+}
+
+.app.light-mode .checkbox-custom {
+  border-color: rgba(0, 0, 0, 0.2);
+  background: repeating-conic-gradient(rgba(0, 0, 0, 0.15) 0deg 90deg,
+      rgba(0, 0, 0, 0.05) 90deg 180deg);
+  background-size: 6px 6px;
 }
