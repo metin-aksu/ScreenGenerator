@@ -1,18 +1,9 @@
-import { useState, useMemo, useRef } from 'react';
+import { useState, useRef } from 'react';
 import PhoneFrame from './components/PhoneFrame';
 import DownloadButton from './components/DownloadButton';
 import './index.css';
 
-// Rengin açık mı koyu mu olduğunu hesapla
-function isLightColor(hexColor: string): boolean {
-  const hex = hexColor.replace('#', '');
-  const r = parseInt(hex.substring(0, 2), 16);
-  const g = parseInt(hex.substring(2, 4), 16);
-  const b = parseInt(hex.substring(4, 6), 16);
-  // Luminance formülü
-  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-  return luminance > 0.5;
-}
+
 
 function App() {
   const [image, setImage] = useState<string | null>(null);
@@ -26,8 +17,6 @@ function App() {
 
   const colorInputRef = useRef<HTMLInputElement>(null);
   const titleColorInputRef = useRef<HTMLInputElement>(null);
-
-  const isLight = useMemo(() => isLightColor(bgColor), [bgColor]);
 
   const handleImageSelect = (file: File) => {
     const reader = new FileReader();
@@ -51,7 +40,7 @@ function App() {
   };
 
   return (
-    <div className={`app ${isLight ? 'light-mode' : ''}`}>
+    <div className="app light-mode">
       <main className="main-content">
         <div
           className="phone-section"
@@ -74,8 +63,8 @@ function App() {
 
         <div className="controls-section">
           <header className="header">
-            <h1>Screenshot Generator</h1>
-            <p className="subtitle">Create screenshots for App Store or Play Store</p>
+            <h1>Screen Generator</h1>
+            <p className="subtitle">Create screen for App Store or Play Store</p>
           </header>
 
           <div className="buttons-container">
