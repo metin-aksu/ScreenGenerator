@@ -3,14 +3,11 @@ import PhoneFrame from './components/PhoneFrame';
 import DownloadButton from './components/DownloadButton';
 import './index.css';
 
-
-
 function App() {
   const [image, setImage] = useState<string | null>(null);
   const [bgColor, setBgColor] = useState('#ffffff');
   const [transparentBg, setTransparentBg] = useState(false);
 
-  // Title state
   const [titleText, setTitleText] = useState('');
   const [titleColor, setTitleColor] = useState('#000000');
   const [titleSize, setTitleSize] = useState(40);
@@ -56,7 +53,6 @@ function App() {
               style={{
                 color: titleColor,
                 fontSize: `${titleSize}px`,
-                // marginBottom: '10px'
               }}
             >
               {titleText}
@@ -72,7 +68,6 @@ function App() {
           </header>
 
           <div className="buttons-container">
-            {/* Title Controls */}
             <div className="control-group">
               <label className="control-label">Title</label>
               <input

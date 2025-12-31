@@ -23,15 +23,12 @@ const PhoneFrame: React.FC<PhoneFrameProps> = ({ image, onImageSelect }) => {
   return (
     <div className="phone-frame-container">
       <div className="phone-frame-wrapper">
-        {/* Çerçeve Resmi */}
         <img src="/phone-frame.png" alt="Phone Frame" className="frame-image" />
 
-        {/* Ekran Alanı (Resmin üstüne yerleştirilecek) */}
         <div className="screen-container" onClick={handleClick}>
           {image ? (
             <div className="preview-container">
               <img src={image} alt="Preview" className="preview-image" />
-              {/* Dynamic Island Overlay (Opsiyonel, eğer resimdeki kaybolursa diye) */}
               <div className="dynamic-island-overlay"></div>
             </div>
           ) : (

@@ -8,7 +8,6 @@
 .phone-frame-wrapper {
   position: relative;
   width: 320px;
-  /* Genişlik ayarı */
   transition: transform 0.3s ease;
   cursor: pointer;
 }
@@ -22,21 +21,17 @@
   height: auto;
   display: block;
   pointer-events: none;
-  /* Tıklamalar container'a geçsin */
   filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.4));
 }
 
 .screen-container {
   position: absolute;
-  /* Frame görseline göre ekranın başladığı yerleri ayarlıyoruz. 
-     Bu değerler resme göre ince ayar isteyebilir. */
   top: 1.8%;
   left: 4%;
   width: 92%;
   height: 96.5%;
 
   border-radius: 45px;
-  /* Ekran köşe yuvarlaklığı */
   overflow: hidden;
   z-index: 5;
 
@@ -44,7 +39,6 @@
   justify-content: center;
   align-items: center;
   background-color: transparent;
-  /* Resim yokken frame'in kendi siyah ekranı görünsün istersek transparent */
 }
 
 .preview-container {
@@ -81,7 +75,6 @@
   align-items: center;
   color: rgba(255, 255, 255, 0.5);
   gap: 1rem;
-  /* Eğer resim yoksa arkası siyah olsun ki placeholder görünsün (frame ekranı zaten siyah gerçi) */
   background-color: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(5px);
 }
