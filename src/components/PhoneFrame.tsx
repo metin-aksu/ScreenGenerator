@@ -31,7 +31,7 @@ const PhoneFrame: React.FC<PhoneFrameProps> = ({ image, onImageSelect }) => {
             ) : (
               <div className="upload-placeholder">
                 <div className="plus-icon">+</div>
-                <span className="upload-text">Görsel Yükle</span>
+                <span className="upload-text">Upload Image</span>
               </div>
             )}
           </div>
