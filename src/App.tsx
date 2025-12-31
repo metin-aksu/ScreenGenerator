@@ -174,7 +174,7 @@ function App() {
           </div>
 
           <p className="info-text">
-            Output size: 1242 × 2688 pixels (for iPhone 6.5")
+            Output size: 1242 × 2688 pixels (for 6.5")
           </p>
         </div>
       </main>
