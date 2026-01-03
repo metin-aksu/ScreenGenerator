@@ -1,4 +1,4 @@
-# Screenshot Generator
+# Screen Generator
 
-Bu uygulama App Store Connect için iPhone ekran görüntüsü oluşturur.
+Bu uygulama, Play Store ve App Store'a yükleyeceğiniz uygulamalarınız için ekran görüntüleri oluşturmanızı sağlar.
 
